@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://bm7r54sqvqpbg"]
+
+[ext_resource type="Script" uid="uid://bfyr38fnn3qmw" path="res://scripts/wheel.gd" id="1_hm1pg"]
+
+[node name="Wheel" type="Node2D" unique_id=1243351954]
+script = ExtResource("1_hm1pg")
