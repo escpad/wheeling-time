@@ -48,6 +48,46 @@ offset_bottom = 90.0
 theme_override_font_sizes/font_size = 14
 text = "5 spins left"
 
+[node name="BoonSelectorLayer" type="CanvasLayer" parent="." unique_id=1000000009]
+layer = 5
+visible = false
+
+[node name="Dim" type="ColorRect" parent="BoonSelectorLayer" unique_id=1000000010]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.82)
+
+[node name="Title" type="Label" parent="BoonSelectorLayer" unique_id=1000000011]
+offset_left = 376.0
+offset_top = 180.0
+offset_right = 776.0
+offset_bottom = 220.0
+theme_override_font_sizes/font_size = 28
+text = "PICK A BOON"
+horizontal_alignment = 1
+
+[node name="BoonBtn0" type="Button" parent="BoonSelectorLayer" unique_id=1000000012]
+offset_left = 306.0
+offset_top = 240.0
+offset_right = 466.0
+offset_bottom = 430.0
+text = "..."
+
+[node name="BoonBtn1" type="Button" parent="BoonSelectorLayer" unique_id=1000000013]
+offset_left = 496.0
+offset_top = 240.0
+offset_right = 656.0
+offset_bottom = 430.0
+text = "..."
+
+[node name="BoonBtn2" type="Button" parent="BoonSelectorLayer" unique_id=1000000014]
+offset_left = 686.0
+offset_top = 240.0
+offset_right = 846.0
+offset_bottom = 430.0
+text = "..."
+
 [node name="GameOverLayer" type="CanvasLayer" parent="." unique_id=1000000004]
 layer = 10
 visible = false
