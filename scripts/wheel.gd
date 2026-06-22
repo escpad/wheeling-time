@@ -7,7 +7,7 @@ const SECTIONS := [
 	{ "value": 100, "label": "100",  "color": Color(0.2,  0.72, 0.32) },
 	{ "value": 100, "label": "100",  "color": Color(0.85, 0.62, 0.1)  },
 	{ "value": 150, "label": "150",  "color": Color(0.82, 0.22, 0.22) },
-	{ "value": 200, "label": "200",  "color": Color(0.58, 0.12, 0.82) },
+	{ "value": 500, "label": "500",  "color": Color(0.58, 0.12, 0.82) },
 ]
 
 const RADIUS       := 220.0
@@ -28,7 +28,7 @@ func _ready() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept") and state == State.IDLE:
 		start_spin()
-	elif event is InputEventMouseButton and event.pressed and state == State.SPINNING:
+	elif (event.is_action_pressed("ui_accept") or event is InputEventMouseButton) and event.pressed and state == State.SPINNING:
 		state = State.DECELERATING
 
 func _process(delta: float) -> void:

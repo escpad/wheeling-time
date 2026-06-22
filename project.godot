@@ -8,6 +8,10 @@
 
 config_version=5
 
+[autoload]
+
+GameManager="*res://scripts/game_manager.gd"
+
 [application]
 
 config/name="Wheeling Time"

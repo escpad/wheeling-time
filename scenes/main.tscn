@@ -22,4 +22,63 @@ offset_left = 470.0
 offset_top = 50.0
 offset_right = 648.0
 offset_bottom = 73.0
-text = "CLICK THE WHEEL TO STOP"
+text = "Press SPACE to stop!"
+
+[node name="QuotaLabel" type="Label" parent="." unique_id=1000000001]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 220.0
+offset_bottom = 44.0
+theme_override_font_sizes/font_size = 18
+text = "0 / 600"
+
+[node name="QuotaBar" type="ProgressBar" parent="." unique_id=1000000002]
+offset_left = 20.0
+offset_top = 48.0
+offset_right = 220.0
+offset_bottom = 66.0
+max_value = 600.0
+show_percentage = false
+
+[node name="SpinsLabel" type="Label" parent="." unique_id=1000000003]
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 220.0
+offset_bottom = 90.0
+theme_override_font_sizes/font_size = 14
+text = "5 spins left"
+
+[node name="GameOverLayer" type="CanvasLayer" parent="." unique_id=1000000004]
+layer = 10
+visible = false
+
+[node name="Dim" type="ColorRect" parent="GameOverLayer" unique_id=1000000005]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.7)
+
+[node name="ResultLabel" type="Label" parent="GameOverLayer" unique_id=1000000006]
+offset_left = 376.0
+offset_top = 240.0
+offset_right = 776.0
+offset_bottom = 300.0
+theme_override_font_sizes/font_size = 48
+text = "YOU WIN!"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="GameOverLayer" unique_id=1000000007]
+offset_left = 426.0
+offset_top = 308.0
+offset_right = 726.0
+offset_bottom = 344.0
+theme_override_font_sizes/font_size = 20
+text = "Final score: 0 / 600"
+horizontal_alignment = 1
+
+[node name="RestartBtn" type="Button" parent="GameOverLayer" unique_id=1000000008]
+offset_left = 501.0
+offset_top = 360.0
+offset_right = 651.0
+offset_bottom = 400.0
+text = "Play Again"
