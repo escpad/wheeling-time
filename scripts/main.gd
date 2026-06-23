@@ -48,13 +48,17 @@ func _show_boon_selector() -> void:
 	for i in 3:
 		var b: Dictionary = _current_boons[i]
 		var pts   := ("+" if b["value"] >= 0 else "") + str(b["value"]) + " pts"
-		var extra := ("%d°" % b["degrees"]) if b["type"] != "flex" else "flex"
+		var extra: String = ("%d°" % b["degrees"]) if b["type"] in ["fixed", "curse"] else b["type"]
 		_boon_btns[i].text = "%s\n%s  %s\n%s" % [b["name"], b["type"].capitalize(), extra, pts]
 	_wheel.locked = true
 	_boon_sel.visible = true
 
 func _on_boon_chosen(index: int) -> void:
-	_wheel.add_boon(_current_boons[index])
+	var boon: Dictionary = _current_boons[index]
+	if boon["type"] == "replace":
+		_wheel.replace_random_section(boon["value"])
+	else:
+		_wheel.add_boon(boon)
 	_boon_sel.visible = false
 	_wheel.locked = false
 

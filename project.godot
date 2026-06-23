@@ -8,16 +8,16 @@
 
 config_version=5
 
-[autoload]
-
-GameManager="*res://scripts/game_manager.gd"
-
 [application]
 
 config/name="Wheeling Time"
 run/main_scene="uid://3c0f0fl8rrel"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+GameManager="*res://scripts/game_manager.gd"
 
 [display]
 

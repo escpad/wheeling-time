@@ -16,12 +16,13 @@ var sections: Array[Dictionary] = [
 ]
 
 const BOON_POOL: Array[Dictionary] = [
-	{ "name": "Wedge",       "type": "fixed", "degrees": 30.0, "value": 200,  "label": "200"  },
-	{ "name": "Sliver",      "type": "fixed", "degrees": 30.0, "value": 250,  "label": "250"  },
-	{ "name": "Windfall",    "type": "flex",  "degrees": 30.0, "value": 75,   "label": "75"   },
-	{ "name": "Overflow",    "type": "flex",  "degrees": 30.0, "value": 100,  "label": "100"  },
-	{ "name": "Dark Deal",   "type": "curse", "degrees": 30.0, "value": -100, "label": "-100" },
-	{ "name": "Devil's Cut", "type": "curse", "degrees": 30.0, "value": -75,  "label": "-75"  },
+	{ "name": "Wedge",       "type": "fixed",   "degrees": 30.0, "value": 200,  "label": "200"  },
+	{ "name": "Sliver",      "type": "fixed",   "degrees": 30.0, "value": 250,  "label": "250"  },
+	{ "name": "Windfall",    "type": "flex",    "degrees": 30.0, "value": 75,   "label": "75"   },
+	{ "name": "Overflow",    "type": "flex",    "degrees": 30.0, "value": 100,  "label": "100"  },
+	{ "name": "Dark Deal",   "type": "curse",   "degrees": 30.0, "value": -100, "label": "-100" },
+	{ "name": "Devil's Cut", "type": "curse",   "degrees": 30.0, "value": -75,  "label": "-75"  },
+	{ "name": "Transmute",   "type": "replace", "degrees": 0.0,  "value": 250,  "label": "250"  },
 ]
 
 const RADIUS     := 220.0
@@ -61,7 +62,13 @@ func _color_for(value: int, type: String) -> Color:
 	return Color.from_hsv(lerpf(0.36, 0.11, t), lerpf(0.5, 0.92, t), lerpf(0.52, 0.96, t))
 
 # BOONS ---------------------------------------------------------------
-
+func replace_random_section(new_value: int) -> void:
+	var s: Dictionary = sections.pick_random()
+	s["value"] = new_value
+	s["label"] = str(new_value)
+	s["color"] = _color_for(new_value, s["type"])
+	queue_redraw()
+	
 func add_boon(boon: Dictionary) -> void:
 	var entry := boon.duplicate()
 	entry["color"] = _color_for(entry["value"], entry["type"])
@@ -83,9 +90,11 @@ func recalculate_sections() -> void:
 			s["degrees"] = each
 
 func get_three_boons() -> Array:
-	var pool := BOON_POOL.duplicate()
-	pool.shuffle()
-	return pool.slice(0, 3)
+	var curses    := BOON_POOL.filter(func(b: Dictionary) -> bool: return b["type"] == "curse")
+	var positives := BOON_POOL.filter(func(b: Dictionary) -> bool: return b["type"] != "curse")
+	curses.shuffle()
+	positives.shuffle()
+	return [positives[0], positives[1], curses[0]]
 
 # SPIN PHYSICS ---------------------------------------------------------------
 
@@ -96,6 +105,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		start_spin()
 	elif (event.is_action_pressed("ui_accept") or event is InputEventMouseButton) and event.pressed and state == State.SPINNING:
 		state = State.DECELERATING
+		
 
 func _process(delta: float) -> void:
 	if state == State.IDLE:
