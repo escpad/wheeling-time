@@ -3,6 +3,8 @@ extends Node2D
 const WHEEL_POS    := Vector2(576, 324)
 const WHEEL_RADIUS := 220.0
 
+var _pixel_font: Font = preload("res://assets/BoldPixels.ttf")
+
 @onready var _wheel:       Node2D      = $Wheel
 @onready var _spin_btn:    Button      = $SpinButton
 @onready var _spin_helper: Label       = $SpinText
@@ -13,7 +15,9 @@ const WHEEL_RADIUS := 220.0
 @onready var _result_lbl:  Label       = $"GameOverLayer/ResultLabel"
 @onready var _score_lbl:   Label       = $"GameOverLayer/ScoreLabel"
 @onready var _restart_btn: Button      = $"GameOverLayer/RestartBtn"
+@onready var _curse_tracker: VBoxContainer = $CurseTracker
 @onready var _boon_sel:    CanvasLayer = $BoonSelectorLayer
+@onready var _skip_btn:    Button      = $"BoonSelectorLayer/SkipBtn"
 @onready var _boon_btns:   Array       = [
 	$"BoonSelectorLayer/BoonBtn0",
 	$"BoonSelectorLayer/BoonBtn1",
@@ -27,11 +31,15 @@ func _ready() -> void:
 	_spin_btn.pressed.connect(_wheel.start_spin)
 	_wheel.spin_stopped.connect(_on_spin_stopped)
 	_restart_btn.pressed.connect(GameManager.reload)
+	_skip_btn.pressed.connect(_on_skip)
 	GameManager.score_changed.connect(func(_s: int): _update_hud())
 	GameManager.game_over.connect(_on_game_over)
 	for i in 3:
 		var idx := i
-		_boon_btns[i].pressed.connect(func(): _on_boon_chosen(idx))
+		var btn: Button = _boon_btns[i]
+		btn.pressed.connect(func(): _on_boon_chosen(idx))
+		btn.mouse_entered.connect(func(): _scale_card(btn, Vector2(1.06, 1.06)))
+		btn.mouse_exited.connect(func(): _scale_card(btn, Vector2.ONE))
 	_update_hud()
 
 func _on_spin_stopped(_index: int, value: int) -> void:
@@ -41,7 +49,13 @@ func _on_spin_stopped(_index: int, value: int) -> void:
 	_update_hud()
 	GameManager.check_and_end()
 	if not GameManager.is_over():
+		_spin_helper.text = "LAST SPIN — click to stop!" if GameManager.spins_left == 1 else "Press SPACE to stop!"
 		_show_boon_selector()
+
+func _scale_card(btn: Button, target: Vector2) -> void:
+	btn.pivot_offset = btn.size / 2.0
+	var tw := create_tween().set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUINT)
+	tw.tween_property(btn, "scale", target, 0.12)
 
 func _show_boon_selector() -> void:
 	_current_boons = _wheel.get_three_boons()
@@ -49,7 +63,13 @@ func _show_boon_selector() -> void:
 		var b: Dictionary = _current_boons[i]
 		var pts   := ("+" if b["value"] >= 0 else "") + str(b["value"]) + " pts"
 		var extra: String = ("%d°" % b["degrees"]) if b["type"] in ["fixed", "curse"] else b["type"]
-		_boon_btns[i].text = "%s\n%s  %s\n%s" % [b["name"], b["type"].capitalize(), extra, pts]
+		var passive := ""
+		if b["type"] == "curse":
+			if b.get("passive", "") == "multiply_gold":
+				passive += "\n1.5x all Gold"
+			if b.get("passive2", "") == "double_dark":
+				passive += "\n2x all Curses"
+		_boon_btns[i].text = "%s\n%s  %s\n%s%s" % [b["name"], b["type"].capitalize(), extra, pts, passive]
 	_wheel.locked = true
 	_boon_sel.visible = true
 
@@ -59,6 +79,45 @@ func _on_boon_chosen(index: int) -> void:
 		_wheel.replace_random_section(boon["value"])
 	else:
 		_wheel.add_boon(boon)
+	if boon["type"] == "curse":
+		_add_curse_icon(boon)
+	for btn: Button in _boon_btns:
+		btn.scale = Vector2.ONE
+	_boon_sel.visible = false
+	_wheel.locked = false
+
+func _add_curse_icon(boon: Dictionary) -> void:
+	var abbrev := ""
+	for word in boon["name"].split(" "):
+		abbrev += word[0].to_upper()
+
+	var effects: Array[String] = []
+	if boon.get("passive",  "") == "multiply_gold": effects.append("1.5x all Gold")
+	if boon.get("passive2", "") == "double_dark":   effects.append("2x all Curses")
+
+	var icon := PanelContainer.new()
+	icon.custom_minimum_size = Vector2(40, 40)
+	icon.tooltip_text = "%s\n%s" % [boon["name"], "\n".join(effects)]
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.25, 0.0, 0.35)
+	style.corner_radius_top_left    = 4
+	style.corner_radius_top_right   = 4
+	style.corner_radius_bottom_right = 4
+	style.corner_radius_bottom_left  = 4
+	icon.add_theme_stylebox_override("panel", style)
+	var lbl := Label.new()
+	lbl.text = abbrev
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment   = VERTICAL_ALIGNMENT_CENTER
+	lbl.add_theme_font_override("font", _pixel_font)
+	lbl.add_theme_font_size_override("font_size", 14)
+	lbl.add_theme_color_override("font_color", Color.WHITE)
+	icon.add_child(lbl)
+	_curse_tracker.add_child(icon)
+
+func _on_skip() -> void:
+	for btn: Button in _boon_btns:
+		btn.scale = Vector2.ONE
 	_boon_sel.visible = false
 	_wheel.locked = false
 
