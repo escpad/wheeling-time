@@ -42,6 +42,7 @@ var state: State = State.IDLE
 var angular_velocity: float = 0.0
 var locked: bool = false
 var passives: Array[String] = []
+var debuff_active: bool = false
 var _decel_rate: float = DECEL_RATE_NORMAL
 
 signal spin_stopped(landed_index: int, value: int)
@@ -108,6 +109,26 @@ func _mutate_section(s: Dictionary, passive: String) -> void:
 				s["value"] *= 2
 				s["label"] = str(s["value"])
 				s["color"] = _color_for(s["value"], s["group"])
+
+func apply_debuff() -> void:
+	debuff_active = true
+	for s in sections:
+		s["pre_debuff"] = s["value"]
+		if s["value"] > 0:
+			s["value"] = s["value"] / 2
+			s["label"] = str(s["value"])
+			s["color"]  = _color_for(s["value"], s["group"])
+	queue_redraw()
+
+func remove_debuff() -> void:
+	debuff_active = false
+	for s in sections:
+		if s.has("pre_debuff"):
+			s["value"] = s["pre_debuff"]
+			s.erase("pre_debuff")
+			s["label"] = str(s["value"])
+			s["color"]  = _color_for(s["value"], s["group"])
+	queue_redraw()
 
 func recalculate_sections() -> void:
 	var fixed_total     := 0.0
