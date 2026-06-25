@@ -48,6 +48,7 @@ var _decel_rate: float = DECEL_RATE_NORMAL
 signal spin_stopped(landed_index: int, value: int)
 
 func _ready() -> void:
+	randomize()
 	for s in sections:
 		s["group"] = _group_for(s["type"])
 		s["color"] = _color_for(s["value"], s["group"])
@@ -93,7 +94,7 @@ func add_boon(boon: Dictionary) -> void:
 	else:
 		for p in passives:
 			_mutate_section(entry, p)
-	sections.append(entry)
+	sections.insert(randi() % (sections.size() + 1), entry)
 	recalculate_sections()
 	queue_redraw()
 
@@ -130,6 +131,8 @@ func remove_debuff() -> void:
 			s["color"]  = _color_for(s["value"], s["group"])
 	queue_redraw()
 
+const MIN_SECTION_DEG := 8.0  # minimum degrees for any resizable section
+
 func recalculate_sections() -> void:
 	var fixed_total     := 0.0
 	var resizable_count := 0
@@ -138,6 +141,16 @@ func recalculate_sections() -> void:
 			fixed_total += s["degrees"]
 		else:
 			resizable_count += 1
+
+	# Scale fixed/curse sections down if they'd crowd out resizables
+	var max_fixed := 360.0 - resizable_count * MIN_SECTION_DEG
+	if fixed_total > max_fixed and fixed_total > 0.0:
+		var scale := max_fixed / fixed_total
+		for s in sections:
+			if s["type"] in ["fixed", "curse"]:
+				s["degrees"] *= scale
+		fixed_total = max_fixed
+
 	var each := (360.0 - fixed_total) / resizable_count if resizable_count > 0 else 0.0
 	for s in sections:
 		if s["type"] in ["base", "flex"]:
@@ -202,11 +215,12 @@ func _draw() -> void:
 		var mid   := rad + sweep * 0.5
 		_draw_section(rad, rad + sweep, s["color"])
 		draw_line(Vector2.ZERO, Vector2(cos(rad), sin(rad)) * RADIUS, Color.BLACK, 2.0)
-		var sz := _font.get_string_size(s["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE)
-		draw_set_transform(Vector2.ZERO, mid, Vector2.ONE)
-		draw_string(_font, Vector2(RADIUS * LABEL_DIST - sz.x * 0.5, sz.y * 0.35),
-			s["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color.WHITE)
-		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		if s["degrees"] >= 15.0:
+			var sz := _font.get_string_size(s["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE)
+			draw_set_transform(Vector2.ZERO, mid, Vector2.ONE)
+			draw_string(_font, Vector2(RADIUS * LABEL_DIST - sz.x * 0.5, sz.y * 0.35),
+				s["label"], HORIZONTAL_ALIGNMENT_LEFT, -1, FONT_SIZE, Color.WHITE)
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
 		rad += sweep
 	draw_arc(Vector2.ZERO, RADIUS, 0, TAU, 64, Color.BLACK, 3.0)
 
