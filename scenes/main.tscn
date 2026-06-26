@@ -2,28 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://bm7r54sqvqpbg" path="res://scenes/wheel.tscn" id="1_o5qli"]
 [ext_resource type="Script" uid="uid://b6drkwqrn636e" path="res://scripts/main.gd" id="2_main"]
-[ext_resource type="FontFile" path="res://assets/BoldPixels.ttf" id="3_font"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_normal"]
-bg_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hover"]
-bg_color = Color(0.88, 0.88, 0.88, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pressed"]
-bg_color = Color(0.75, 0.75, 0.75, 1)
-corner_radius_top_left = 6
-corner_radius_top_right = 6
-corner_radius_bottom_right = 6
-corner_radius_bottom_left = 6
+[ext_resource type="FontFile" uid="uid://byca81jbrxfp" path="res://assets/BoldPixels.ttf" id="3_font"]
 
 [node name="Main" type="Node2D" unique_id=1301171684]
 script = ExtResource("2_main")
@@ -85,23 +64,10 @@ offset_left = 20.0
 offset_top = 118.0
 offset_right = 260.0
 offset_bottom = 136.0
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 13
-theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 text = "! VALUES HALVED"
-
-[node name="CurseTracker" type="VBoxContainer" parent="." unique_id=1000000016]
-offset_left = 930.0
-offset_top = 20.0
-offset_right = 1130.0
-offset_bottom = 40.0
-theme_override_constants/separation = 6
-
-[node name="CurseHeader" type="Label" parent="CurseTracker" unique_id=1000000017]
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_font_sizes/font_size = 14
-theme_override_colors/font_color = Color(0.6, 0.4, 0.8, 1)
-text = "CURSES"
 
 [node name="BoonSelectorLayer" type="CanvasLayer" parent="." unique_id=1000000009]
 layer = 5
@@ -115,54 +81,52 @@ color = Color(0, 0, 0, 0.82)
 
 [node name="Title" type="Label" parent="BoonSelectorLayer" unique_id=1000000011]
 offset_left = 376.0
-offset_top = 180.0
+offset_top = 176.0
 offset_right = 776.0
-offset_bottom = 220.0
-theme_override_font_sizes/font_size = 28
-text = "PICK A BOON"
+offset_bottom = 216.0
+theme_override_colors/font_color = Color(0.96, 0.94, 0.9, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 30
+text = "CHOOSE ONE"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="BoonSelectorLayer" unique_id=1000000025]
+offset_left = 376.0
+offset_top = 214.0
+offset_right = 776.0
+offset_bottom = 234.0
+theme_override_colors/font_color = Color(0.58, 0.56, 0.64, 1)
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 13
+text = "add it to your wheel"
 horizontal_alignment = 1
 
 [node name="BoonBtn0" type="Button" parent="BoonSelectorLayer" unique_id=1000000012]
-offset_left = 306.0
-offset_top = 240.0
-offset_right = 466.0
-offset_bottom = 430.0
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
-text = "..."
+offset_left = 300.0
+offset_top = 250.0
+offset_right = 464.0
+offset_bottom = 474.0
 
 [node name="BoonBtn1" type="Button" parent="BoonSelectorLayer" unique_id=1000000013]
-offset_left = 496.0
-offset_top = 240.0
-offset_right = 656.0
-offset_bottom = 430.0
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
-text = "..."
+offset_left = 494.0
+offset_top = 250.0
+offset_right = 658.0
+offset_bottom = 474.0
 
 [node name="BoonBtn2" type="Button" parent="BoonSelectorLayer" unique_id=1000000014]
-offset_left = 686.0
-offset_top = 240.0
-offset_right = 846.0
-offset_bottom = 430.0
-theme_override_fonts/font = ExtResource("3_font")
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_styles/normal = SubResource("StyleBoxFlat_normal")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_pressed")
-text = "..."
+offset_left = 688.0
+offset_top = 250.0
+offset_right = 852.0
+offset_bottom = 474.0
 
 [node name="SkipBtn" type="Button" parent="BoonSelectorLayer" unique_id=1000000015]
-offset_left = 516.0
-offset_top = 445.0
-offset_right = 636.0
-offset_bottom = 475.0
+offset_left = 526.0
+offset_top = 488.0
+offset_right = 626.0
+offset_bottom = 516.0
+theme_override_colors/font_color = Color(0.62, 0.6, 0.68, 1)
 theme_override_fonts/font = ExtResource("3_font")
-theme_override_colors/font_color = Color(0.7, 0.7, 0.7, 1)
-text = "Skip"
+text = "skip"
 
 [node name="LevelCompleteLayer" type="CanvasLayer" parent="." unique_id=1000000020]
 layer = 7
@@ -179,20 +143,20 @@ offset_left = 376.0
 offset_top = 230.0
 offset_right = 776.0
 offset_bottom = 290.0
-horizontal_alignment = 1
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 42
 text = "LEVEL COMPLETE"
+horizontal_alignment = 1
 
 [node name="NextLevelLabel" type="Label" parent="LevelCompleteLayer" unique_id=1000000023]
 offset_left = 426.0
 offset_top = 298.0
 offset_right = 726.0
 offset_bottom = 330.0
-horizontal_alignment = 1
 theme_override_fonts/font = ExtResource("3_font")
 theme_override_font_sizes/font_size = 22
 text = "Next: 1-2"
+horizontal_alignment = 1
 
 [node name="ContinueBtn" type="Button" parent="LevelCompleteLayer" unique_id=1000000024]
 offset_left = 511.0

@@ -4,6 +4,11 @@ const TOTAL_STAGES     := 3
 const LEVELS_PER_STAGE := 3
 const SPINS_PER_LEVEL  := 5
 
+# Quota = (level_index + QUOTA_BASE) * QUOTA_STEP, where level_index counts
+# from 0 across the whole run. So 1-1 = (0 + 2) * 150 = 300, 3-3 = 1500.
+const QUOTA_BASE       := 2
+const QUOTA_STEP       := 150
+
 signal game_started
 signal game_over(won: bool)
 signal score_changed(new_score: int)
@@ -25,7 +30,8 @@ func start_game() -> void:
 	emit_signal("game_started")
 
 func _quota_for(s: int, l: int) -> int:
-	return ((s - 1) * 3 + (l - 1) + 2) * 150
+	var level_index := (s - 1) * LEVELS_PER_STAGE + (l - 1)
+	return (level_index + QUOTA_BASE) * QUOTA_STEP
 
 func is_boss_level() -> bool:
 	return level == LEVELS_PER_STAGE
@@ -49,6 +55,10 @@ func add_score(value: int) -> void:
 
 func use_spin() -> void:
 	spins_left -= 1
+
+func add_spin() -> void:
+	spins_left += 1
+	emit_signal("score_changed", score)  # reuse to trigger HUD refresh
 
 func is_over() -> bool:
 	return score >= quota or spins_left <= 0

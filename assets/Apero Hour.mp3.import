@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://iii3hlgio1s2"
+path="res://.godot/imported/Apero Hour.mp3-c45399d8f6dcc6c179b33406b878dea2.mp3str"
+
+[deps]
+
+source_file="res://assets/Apero Hour.mp3"
+dest_files=["res://.godot/imported/Apero Hour.mp3-c45399d8f6dcc6c179b33406b878dea2.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4
