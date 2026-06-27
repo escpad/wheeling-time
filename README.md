@@ -1,13 +1,13 @@
-# Wheeling Time
+<img width="2388" height="1668" alt="Untitled_Artwork" src="https://github.com/user-attachments/assets/eb3c2d39-2074-455e-a80a-0652501770bf" />
 
 A roguelike spin-the-wheel game made for a 7-day game jam. Theme: **Spin to Win**.
 
-You get **5 spins** to hit a **600 point quota**. After each spin you pick a boon that reshapes the wheel — adding new sections, shifting the odds, or gambling with a curse for a shot at bonus multipliers. The wheel is yours to build. The last spin is all or nothing.
+You get **5 spins** to hit a point quota. After each spin you pick a boon that reshapes the wheel — adding new sections, shifting the odds, or gambling with a curse for a shot at bonus multipliers. The wheel is yours to build. The last spin is all or nothing.
 
 ## How to play
 
 - Press **Space** or click **SPIN** to start the wheel
-- Click anywhere to stop it
+- Click **Space** again to stop it
 
 ## Built with
 
