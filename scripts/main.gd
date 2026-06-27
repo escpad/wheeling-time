@@ -3,12 +3,14 @@ extends Node2D
 const WHEEL_POS    := Vector2(576, 324)
 const WHEEL_RADIUS := 220.0
 
-# BOON CARD DESIGN TOKENS ---------------------------------------------------
+# UI DESIGN TOKENS ----------------------------------------------------------
 const CARD_BG       := Color(0.11, 0.105, 0.145)
 const CARD_BG_HOVER := Color(0.17, 0.16, 0.22)
 const CARD_BORDER   := Color(0.30, 0.28, 0.38)
 const TEXT_PRIMARY  := Color(0.96, 0.94, 0.90)
 const TEXT_MUTED    := Color(0.58, 0.56, 0.64)
+const ACCENT_GOLD   := Color(0.94, 0.72, 0.18)  # points / primary CTA
+const TRACK_BG      := Color(0.06, 0.06, 0.08)   # progress bar groove
 
 var _pixel_font: Font = preload("res://assets/BoldPixels.ttf")
 var _cards: Array = []   # per-card label/accent refs, built in _ready()
@@ -20,6 +22,7 @@ var _cards: Array = []   # per-card label/accent refs, built in _ready()
 @onready var _quota_bar:      ProgressBar = $QuotaBar
 @onready var _spins_lbl:      Label       = $SpinsLabel
 @onready var _stage_lbl:      Label       = $StageLevelLabel
+@onready var _hud_panel:      Panel       = $HudPanel
 @onready var _debuff_lbl:     Label       = $DebuffLabel
 @onready var _level_layer:    CanvasLayer = $LevelCompleteLayer
 @onready var _level_lbl:      Label       = $"LevelCompleteLayer/LevelLabel"
@@ -61,6 +64,7 @@ func _ready() -> void:
 		btn.mouse_entered.connect(func(): _scale_card(btn, Vector2(1.05, 1.05)))
 		btn.mouse_exited.connect(func(): _scale_card(btn, Vector2.ONE))
 	_style_skip_button()
+	_style_ui()
 	_update_hud()
 
 func _on_spin_stopped(_index: int, value: int) -> void:
@@ -103,6 +107,7 @@ func _on_continue_level() -> void:
 	_level_layer.visible = false
 	_spin_btn.disabled   = false
 	_wheel.locked        = false
+	_spin_helper.visible = false
 	_update_hud()
 
 # BOON SELECTOR ---------------------------------------------------------------
@@ -227,6 +232,56 @@ func _style_skip_button() -> void:
 	for state in ["normal", "hover", "pressed", "focus"]:
 		_skip_btn.add_theme_stylebox_override(state, empty)
 	_skip_btn.focus_mode = Control.FOCUS_NONE
+
+# Applies the boon-card visual language to the rest of the UI: HUD panel,
+# labels, progress bar, spin button, and the overlay buttons/labels.
+func _style_ui() -> void:
+	_hud_panel.add_theme_stylebox_override("panel", _card_sb(CARD_BG))
+
+	_label_style(_stage_lbl, 13, TEXT_MUTED)
+	_label_style(_quota_lbl, 22, TEXT_PRIMARY)
+	_label_style(_spins_lbl, 13, TEXT_MUTED)
+	_label_style(_spin_helper, 16, TEXT_PRIMARY)
+
+	var track := StyleBoxFlat.new()
+	track.bg_color = TRACK_BG
+	track.set_corner_radius_all(6)
+	var fill := StyleBoxFlat.new()
+	fill.bg_color = ACCENT_GOLD
+	fill.set_corner_radius_all(6)
+	_quota_bar.add_theme_stylebox_override("background", track)
+	_quota_bar.add_theme_stylebox_override("fill", fill)
+
+	_button_style(_spin_btn, ACCENT_GOLD, ACCENT_GOLD, 20)   # primary CTA
+	_button_style(_continue_btn, TEXT_PRIMARY, CARD_BORDER, 18)
+	_button_style(_restart_btn, TEXT_PRIMARY, CARD_BORDER, 18)
+
+	_label_style(_result_lbl, 48, TEXT_PRIMARY)
+	_label_style(_score_lbl, 20, TEXT_MUTED)
+
+func _label_style(lbl: Label, size: int, color: Color) -> void:
+	lbl.add_theme_font_override("font", _pixel_font)
+	lbl.add_theme_font_size_override("font_size", size)
+	lbl.add_theme_color_override("font_color", color)
+
+func _button_style(btn: Button, text_color: Color, border: Color, size: int) -> void:
+	var normal := _card_sb(CARD_BG)
+	normal.border_color = border
+	var hover := _card_sb(CARD_BG_HOVER)
+	hover.border_color = border
+	var disabled := _card_sb(Color(0.08, 0.08, 0.10))
+	disabled.border_color = CARD_BORDER
+	btn.add_theme_stylebox_override("normal", normal)
+	btn.add_theme_stylebox_override("hover", hover)
+	btn.add_theme_stylebox_override("pressed", hover)
+	btn.add_theme_stylebox_override("focus", normal)
+	btn.add_theme_stylebox_override("disabled", disabled)
+	btn.add_theme_font_override("font", _pixel_font)
+	btn.add_theme_font_size_override("font_size", size)
+	for state in ["font_color", "font_hover_color", "font_pressed_color"]:
+		btn.add_theme_color_override(state, text_color)
+	btn.add_theme_color_override("font_disabled_color", TEXT_MUTED)
+	btn.focus_mode = Control.FOCUS_NONE
 
 # Family accent color per boon type — echoes the wheel's value language.
 func _family_color(type: String) -> Color:
